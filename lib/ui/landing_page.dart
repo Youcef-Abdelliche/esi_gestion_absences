@@ -5,6 +5,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class LandingPage extends StatelessWidget {
+  final String role;
+
+  const LandingPage({Key key, @required this.role}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,21 +18,24 @@ class LandingPage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             User user = snapshot.data;
-            if (user == null) {
+            if (user != null && user.email.contains("esi.dz")) {
+              return HomePage();
+            } else {
               return LoginPage();
             }
-            return HomePage();
           } else {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [Color(0xFF03045E), Color(0xFF023e8a)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter),
-                  color: Color(0xFF03045E)),
-              child: Image.asset("assets/images/esi_logo.png"),
+            return Scaffold(
+              body: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        colors: [Color(0xFF03045E), Color(0xFF023e8a)],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter),
+                    color: Color(0xFF03045E)),
+                child: Image.asset("assets/images/esi_logo.png"),
+              ),
             );
           }
         },

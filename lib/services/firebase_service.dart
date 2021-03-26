@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class AuthClass {
   Future<User> signInWithGoogle();
+  Future<void> signOut();
 }
 
 class FirebaseService implements AuthClass {
@@ -33,5 +34,11 @@ class FirebaseService implements AuthClass {
       throw FirebaseAuthException(
           code: "ERROR_ABORTED_BY_USER", message: "Sign in aborted by user");
     }
+  }
+
+  @override
+  Future<void> signOut() async {
+    await _firebaseAuth.signOut();
+    await _googleSignIn.signOut();
   }
 }
