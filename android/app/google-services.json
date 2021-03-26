@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "261896290428",
+    "project_id": "esi-gestion-absence",
+    "storage_bucket": "esi-gestion-absence.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:261896290428:android:d08c24a8e92e0e819f09f9",
+        "android_client_info": {
+          "package_name": "com.example.esi_gabsence"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "261896290428-ar8vh9lq7t66jvdl2ik4q02pmudftokc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.esi_gabsence",
+            "certificate_hash": "191260ea5d1090e715fdfc120873a4ec39927e50"
+          }
+        },
+        {
+          "client_id": "261896290428-nom58up15oktd3mvmnmjkq28uu53vm0v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0z-nLNhDRxXAeIGr974suPsRWXhailzE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "261896290428-nom58up15oktd3mvmnmjkq28uu53vm0v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

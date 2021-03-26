@@ -1,5 +1,9 @@
+import 'package:esi_gabsence/services/firebase_service.dart';
+import 'package:esi_gabsence/ui/Home/home_page.dart';
+import 'package:esi_gabsence/ui/landing_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
+import 'components/google_connect_widget.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -9,6 +13,15 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool isStudent = false;
   bool isTeacher = false;
+
+  Future<void> _signInWithGoogle() async {
+    try {
+      await FirebaseService().signInWithGoogle();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   PageController _pageController = PageController(initialPage: 0);
   @override
   Widget build(BuildContext context) {
@@ -155,48 +168,14 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical: 100, horizontal: 20),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(40),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: Offset(0, 3),
-                                )
-                              ]),
-                          child: Row(
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  child: SvgPicture.asset(
-                                      "assets/icons/google.svg", width: 30,)),
-                              Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  child: Text("Sign In With Google", style: TextStyle(fontSize: 20),)),
-                            ],
-                          ),
+                        GoogleConnectWidget(
+                          funtion: () {
+                            _signInWithGoogle();
+                          },
                         ),
                       ],
                     ),
                   ),
-                  /* Container(
-                    decoration: BoxDecoration(color: Color(0xFF03045E)),
-                    margin: EdgeInsets.only(left: 14.0),
-                    padding: EdgeInsets.all(6),
-                    child: Text(
-                      "Next >",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),*/
                 ],
               ),
             ),
