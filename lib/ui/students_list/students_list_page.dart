@@ -1,17 +1,45 @@
+import 'package:esi_gabsence/models/meeting.dart';
+import 'package:esi_gabsence/models/student.dart';
+import 'package:esi_gabsence/services/firebase_auth_service_.dart';
+import 'package:esi_gabsence/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 
-class StudentsListPage extends StatelessWidget {
+class StudentsListPage extends StatefulWidget {
   final String title;
   final String dateTime;
+  final Meeting meeting;
   const StudentsListPage(
-      {Key key, @required this.dateTime, @required this.title})
+      {Key key,
+      @required this.meeting,
+      @required this.dateTime,
+      @required this.title})
       : super(key: key);
+
+  @override
+  _StudentsListPageState createState() => _StudentsListPageState();
+}
+
+class _StudentsListPageState extends State<StudentsListPage> {
+  List<Student> students = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    FiretoreService()
+        .getStudentsByPromoGroupe(widget.meeting.promo, widget.meeting.groupe)
+        .then((value) {
+      setState(() {
+        students = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -19,17 +47,17 @@ class StudentsListPage extends StatelessWidget {
           Container(
             margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             child: Text(
-              dateTime,
+              widget.dateTime,
               style: TextStyle(fontSize: 20, color: Colors.black),
             ),
           ),
           Expanded(
               flex: 2,
               child: ListView.builder(
-                  itemCount: list.length,
+                  itemCount: students.length,
                   itemBuilder: (context, index) {
                     return StudentItem(
-                      name: list[index],
+                      name: students[index].nom+" "+students[index].prenom,
                     );
                   })),
           Container(

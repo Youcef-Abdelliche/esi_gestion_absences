@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:esi_gabsence/models/meeting.dart';
+import 'package:esi_gabsence/models/student.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -31,14 +32,19 @@ class FiretoreService {
     return meetings;
   }
 
-  Future<String> getSeances() async {
-    CollectionReference seances =
-        FirebaseFirestore.instance.collection('seances2021');
-    String s = "";
-    var documentSnapshot = await seances.get().then((value) {
-      s = value.docs.first.data()["seances"][0]["module"];
-    });
+  Future<List<Student>> getStudentsByPromoGroupe(String promo, String groupe) async {
+    CollectionReference etudiants =
+        FirebaseFirestore.instance.collection('etudiants'+promo);
 
-    return s;
+    List<Student> students = [];
+    await etudiants.get().then((querySnapshot) {
+      querySnapshot.docs.forEach((element) {
+        Student student = Student.fromMap(element.data());
+        if(student.groupe == groupe){
+          students.add(student);
+        }
+       });
+    });
+    return students;
   }
 }

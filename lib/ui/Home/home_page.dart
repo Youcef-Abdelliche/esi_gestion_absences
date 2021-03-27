@@ -75,6 +75,7 @@ class _HomePageState extends State<HomePage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => StudentsListPage(
+                                  meeting: meetings[index],
                                       title: "2ST A G04",
                                       dateTime:
                                           "Jeudi, 25 février . 3:00 à 4:00pm",

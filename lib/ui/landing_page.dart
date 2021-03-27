@@ -1,11 +1,18 @@
+import 'package:esi_gabsence/services/shared_preference_service.dart';
 import 'package:esi_gabsence/ui/Auth/login_page.dart';
 import 'package:esi_gabsence/ui/Home/home_page.dart';
+import 'package:esi_gabsence/ui/Home/student_home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LandingPage extends StatelessWidget {
+class LandingPage extends StatefulWidget {
+  @override
+  _LandingPageState createState() => _LandingPageState();
+}
 
+class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,6 +21,10 @@ class LandingPage extends StatelessWidget {
             FirebaseAuth.instanceFor(app: Firebase.app()).authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
+            /*var role;
+            SharedPreferenceService().getUserRole('role').then((value) {
+              role = value;
+            });*/
             User user = snapshot.data;
             if (user != null) {
               return HomePage();

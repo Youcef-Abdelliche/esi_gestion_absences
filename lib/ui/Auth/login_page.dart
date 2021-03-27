@@ -1,4 +1,5 @@
 import 'package:esi_gabsence/services/firebase_auth_service_.dart';
+import 'package:esi_gabsence/services/shared_preference_service.dart';
 import 'package:flutter/material.dart';
 
 import 'components/google_connect_widget.dart';
@@ -11,6 +12,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool isStudent = false;
   bool isTeacher = false;
+  String role;
 
   Future<void> _signInWithGoogle() async {
     try {
@@ -117,6 +119,8 @@ class _LoginPageState extends State<LoginPage> {
                                       isStudent = true;
                                       isTeacher = false;
                                     });
+                                    SharedPreferenceService()
+                                        .setUserRole("etudiant");
                                     _pageController.nextPage(
                                         duration: Duration(milliseconds: 500),
                                         curve: Curves.easeIn);
@@ -157,6 +161,8 @@ class _LoginPageState extends State<LoginPage> {
                                       isStudent = false;
                                       isTeacher = true;
                                     });
+                                    SharedPreferenceService()
+                                        .setUserRole("enseignant");
                                     _pageController.nextPage(
                                         duration: Duration(milliseconds: 500),
                                         curve: Curves.easeIn);
