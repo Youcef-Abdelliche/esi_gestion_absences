@@ -1,6 +1,4 @@
 import 'package:esi_gabsence/services/firebase_service.dart';
-import 'package:esi_gabsence/ui/Home/home_page.dart';
-import 'package:esi_gabsence/ui/landing_page.dart';
 import 'package:flutter/material.dart';
 
 import 'components/google_connect_widget.dart';
