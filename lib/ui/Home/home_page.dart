@@ -1,4 +1,5 @@
 import 'package:esi_gabsence/services/firebase_service.dart';
+import 'package:esi_gabsence/ui/students_list/students_list_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,19 @@ class _HomePageState extends State<HomePage> {
               child: ListView.builder(
                   itemCount: 4,
                   itemBuilder: (context, index) {
-                    return ItemMeeting();
+                    return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => StudentsListPage(
+                                      title: "2ST A G04",
+                                      dateTime:
+                                          "Jeudi, 25 février . 3:00 à 4:00pm",
+                                    )),
+                          );
+                        },
+                        child: ItemMeeting());
                   })),
         ],
       ),
