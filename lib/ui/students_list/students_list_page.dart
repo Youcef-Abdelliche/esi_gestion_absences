@@ -87,8 +87,8 @@ List<String> list = [
   "Abdelliche Youcef",
   "Kati Kousseila",
   "Kecharoui haroune",
-  "Bacha Ilyes"
-      "Ali Arous Mostefa",
+  "Bacha Ilyes",
+  "Ali Arous Mostefa",
   "Ferhat Chala",
   "Khorsi Zizou",
   "Bouaba Saloua",

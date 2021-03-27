@@ -1,4 +1,4 @@
-import 'package:esi_gabsence/services/firebase_service.dart';
+import 'package:esi_gabsence/services/firebase_auth_service_.dart';
 import 'package:flutter/material.dart';
 
 import 'components/google_connect_widget.dart';

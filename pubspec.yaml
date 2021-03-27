@@ -30,9 +30,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_svg: ^0.19.3
   firebase_auth: ^1.0.1
-  firebase_core: ^1.0.2
-  cloud_firestore: ^1.0.3
+  firebase_core: ^1.0.0
+  cloud_firestore: ^1.0.0
   google_sign_in: ^5.0.1
+  # device_calendar: ^3.1.0
+  intl: ^0.17.0
+  shared_preferences: ^2.0.5
 
 dev_dependencies:
   flutter_test:

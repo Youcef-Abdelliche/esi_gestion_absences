@@ -1,8 +1,14 @@
-import 'package:esi_gabsence/services/firebase_service.dart';
+import 'dart:collection';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:esi_gabsence/models/meeting.dart';
+import 'package:esi_gabsence/services/firebase_auth_service_.dart';
+import 'package:esi_gabsence/services/firestore_service.dart';
 import 'package:esi_gabsence/ui/students_list/students_list_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,6 +17,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var email;
+  var date = "Monday";
+  List<Meeting> meetings = [];
+
   @override
   void initState() {
     super.initState();
@@ -18,6 +27,13 @@ class _HomePageState extends State<HomePage> {
     if (user != null) {
       email = user.email;
     } else {}
+
+    FiretoreService().getTodayMeeting(email, DateTime.now()).then((value) {
+      setState(() {
+        meetings = value;
+      });
+    });
+    
   }
 
   @override
@@ -40,17 +56,21 @@ class _HomePageState extends State<HomePage> {
           Container(
             margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             child: Text(
-              "Jeudi, 25 février",
+              days[DateFormat('EEEE').format(DateTime.now())] +
+                  ", " +
+                  DateTime.now().day.toString() +
+                  " " +
+                  months[DateTime.now().month],
               style: TextStyle(fontSize: 20, color: Colors.black),
             ),
           ),
           Expanded(
               flex: 2,
               child: ListView.builder(
-                  itemCount: 4,
+                  itemCount: meetings.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
-                        onTap: () {
+                        onTap: () async {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -61,7 +81,10 @@ class _HomePageState extends State<HomePage> {
                                     )),
                           );
                         },
-                        child: ItemMeeting());
+                        child: ItemMeeting(
+                          title: meetings[index].module.toUpperCase(),
+                          dateTime: meetings[index].time,
+                        ));
                   })),
         ],
       ),
@@ -70,7 +93,11 @@ class _HomePageState extends State<HomePage> {
 }
 
 class ItemMeeting extends StatelessWidget {
+  final String title;
+  final String dateTime;
   const ItemMeeting({
+    this.title,
+    this.dateTime,
     Key key,
   }) : super(key: key);
 
@@ -93,12 +120,12 @@ class ItemMeeting extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "2ST A G04",
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                title,
+                style: TextStyle(fontSize: 24, color: Colors.white),
               ),
               Text(
-                "3:00 à 4:00pm",
-                style: TextStyle(fontSize: 10, color: Colors.white),
+                dateTime,
+                style: TextStyle(fontSize: 14, color: Colors.white),
               ),
             ],
           ),
@@ -113,3 +140,30 @@ class ItemMeeting extends StatelessWidget {
     );
   }
 }
+
+Map<String, String> days = {
+  'Monday': "Lundi",
+  'Tuesday': "Mardi",
+  'Wednesday': "Mercredi",
+  'Thursday': "Jeudi",
+  'Friday': "Vendredi",
+  'Saturday': "Samedi",
+  'Sunday': "Dimanche"
+};
+
+List<String> months = [
+  "janvier",
+  "férier",
+  "mars",
+  "avril",
+  "mai",
+  "juin",
+  "juillet",
+  "aout",
+  "séptembre",
+  "octobre",
+  "novembre",
+  "décembre"
+];
+
+/** */
