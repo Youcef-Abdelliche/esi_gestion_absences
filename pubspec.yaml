@@ -37,6 +37,7 @@ dependencies:
   intl: ^0.17.0
   shared_preferences: ^2.0.5
   fluttertoast: ^8.0.3
+  flutter_email_sender: ^5.0.0
 
 dev_dependencies:
   flutter_test:
