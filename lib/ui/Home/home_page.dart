@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
       email = user.email;
     } else {}
 
-    FiretoreService().getTodayMeeting(email, DateTime.now()).then((value) {
+    FiretoreService().getTodayMeeting(email, DateTime(2021, 3, 28)).then((value) {
       setState(() {
         meetings = value;
       });

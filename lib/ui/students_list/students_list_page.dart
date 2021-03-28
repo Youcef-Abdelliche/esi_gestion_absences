@@ -3,6 +3,7 @@ import 'package:esi_gabsence/models/student.dart';
 import 'package:esi_gabsence/services/firebase_auth_service_.dart';
 import 'package:esi_gabsence/services/firestore_service.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class StudentsListPage extends StatefulWidget {
   final String title;
@@ -21,7 +22,7 @@ class StudentsListPage extends StatefulWidget {
 
 class _StudentsListPageState extends State<StudentsListPage> {
   List<Student> students = [];
-
+  List<bool> Absents = [];
   @override
   void initState() {
     // TODO: implement initState
@@ -31,6 +32,11 @@ class _StudentsListPageState extends State<StudentsListPage> {
         .then((value) {
       setState(() {
         students = value;
+      });
+      students.forEach((element) {
+        setState(() {
+          Absents.add(false);
+        });
       });
     });
   }
@@ -57,23 +63,54 @@ class _StudentsListPageState extends State<StudentsListPage> {
                   itemCount: students.length,
                   itemBuilder: (context, index) {
                     return StudentItem(
-                      name: students[index].nom+" "+students[index].prenom,
+                      isAbsent: Absents[index],
+                      name: students[index].nom + " " + students[index].prenom,
+                      function: (value) {
+                        setState(() {
+                          Absents[index] = value;
+                        });
+                      },
                     );
                   })),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: Colors.red),
-            child: Text(
-              "Signaler",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
+          GestureDetector(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), color: Colors.red),
+              child: Text(
+                "Signaler",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
               ),
             ),
+            onTap: () {
+              List<Student> absentStudents = [];
+              for (int i = 0; i < Absents.length; i++) {
+                if (Absents[i]) {
+                  absentStudents.add(students[i]);
+                }
+              }
+
+              FiretoreService()
+                  .signaleAbsents(
+                      absentStudents, widget.meeting, DateTime.now())
+                  .then((value) {
+                Fluttertoast.showToast(
+                    msg: value,
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+              });
+              Navigator.of(context).pop();
+            },
           )
         ],
       ),
@@ -84,9 +121,13 @@ class _StudentsListPageState extends State<StudentsListPage> {
 class StudentItem extends StatelessWidget {
   final String name;
   final int index;
+  final bool isAbsent;
+  final Function function;
   const StudentItem({
     this.name,
     this.index,
+    this.isAbsent,
+    this.function,
     Key key,
   }) : super(key: key);
 
@@ -101,12 +142,14 @@ class StudentItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             color: Colors.white),
         child: CheckboxListTile(
-          value: false,
+          value: isAbsent,
           title: Text(
             name,
             style: TextStyle(fontSize: 20, color: Color(0xFF023e8a)),
           ),
-          onChanged: (value) {},
+          onChanged: (value) {
+            function(value);
+          },
         ));
   }
 }
