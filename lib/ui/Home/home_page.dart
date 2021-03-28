@@ -3,12 +3,14 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:esi_gabsence/models/meeting.dart';
 import 'package:esi_gabsence/services/firebase_auth_service_.dart';
-import 'package:esi_gabsence/services/firestore_service.dart';
+import 'package:esi_gabsence/services/firestore_teatcher_service.dart';
 import 'package:esi_gabsence/ui/students_list/students_list_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'components/item_meeting.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -18,6 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var email;
   var date = "Monday";
+  bool signal = false;
   List<Meeting> meetings = [];
 
   @override
@@ -28,7 +31,7 @@ class _HomePageState extends State<HomePage> {
       email = user.email;
     } else {}
 
-    FiretoreService()
+    FiretoreTeacherService()
         .getTodayMeeting(email, DateTime(2021, 3, 28))
         .then((value) {
       setState(() {
@@ -41,7 +44,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(email ?? "Nothing"),
+        title: Text(email ?? "Error"),
         actions: [
           TextButton(
             child: Text("Logout"),
@@ -81,8 +84,15 @@ class _HomePageState extends State<HomePage> {
                                       dateTime:
                                           "Jeudi, 25 février . 3:00 à 4:00pm",
                                     )),
-                          ).whenComplete(() {
-                            meetings[index].absence = true;
+                          ).then((value) {
+                            if (value != null) {
+                              setState(() {
+                                signal = value;
+                                 meetings[index].absence = signal;
+                              });
+                            } else {
+                              meetings[index].absence = signal;
+                            }
                           });
                         },
                         child: ItemMeeting(
@@ -96,54 +106,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class ItemMeeting extends StatelessWidget {
-  final String title;
-  final String dateTime;
-  const ItemMeeting({
-    this.title,
-    this.dateTime,
-    Key key,
-  }) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        gradient: LinearGradient(
-          colors: [Color(0xFF03045E), Color(0xFF023e8a)],
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(fontSize: 24, color: Colors.white),
-              ),
-              Text(
-                dateTime,
-                style: TextStyle(fontSize: 14, color: Colors.white),
-              ),
-            ],
-          ),
-          IconButton(
-              icon: Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.white,
-              ),
-              onPressed: () {})
-        ],
-      ),
-    );
-  }
-}
 
 Map<String, String> days = {
   'Monday': "Lundi",

@@ -4,7 +4,7 @@ import 'package:esi_gabsence/models/student.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-class FiretoreService {
+class FiretoreTeacherService {
   final firestoreInstance = FirebaseFirestore.instance;
   //final _firebaseAuth = FirebaseAuth.instanceFor(app: Firebase.app());
 
@@ -114,21 +114,6 @@ class FiretoreService {
     }
 
     return absentsss;
-  }
-
-  Future<void> changeAbsenceStatut(Meeting meeting, DateTime dateTime) async {
-    String todayDate = dateTime.year.toString() +
-        "-" +
-        dateTime.month.toString() +
-        "-" +
-        dateTime.day.toString();
-
-    var user = FirebaseAuth.instanceFor(app: Firebase.app()).currentUser;
-    assert(user != null);
-
-    //await seances.doc(todayDate).set();
-
-    return null;
   }
 }
 

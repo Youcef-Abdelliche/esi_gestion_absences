@@ -27,7 +27,7 @@ class _LandingPageState extends State<LandingPage> {
             });*/
             User user = snapshot.data;
             if (user != null) {
-              return HomePage();
+              return StudentHomePage();
             } else {
               return LoginPage();
             }

@@ -1,7 +1,7 @@
 import 'package:esi_gabsence/models/meeting.dart';
 import 'package:esi_gabsence/models/student.dart';
 import 'package:esi_gabsence/services/firebase_auth_service_.dart';
-import 'package:esi_gabsence/services/firestore_service.dart';
+import 'package:esi_gabsence/services/firestore_teatcher_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -24,11 +24,12 @@ class _StudentsListPageState extends State<StudentsListPage> {
   List<Student> students = [];
   List<bool> absents = [];
   List<Student> listStudentsAbsents = [];
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    FiretoreService()
+    FiretoreTeacherService()
         .getStudentsByPromoGroupe(widget.meeting.promo, widget.meeting.groupe)
         .then((value) {
       setState(() {
@@ -41,13 +42,12 @@ class _StudentsListPageState extends State<StudentsListPage> {
       });
 
       if (widget.meeting.absence)
-        FiretoreService()
+        FiretoreTeacherService()
             .getAbsentsStudents(DateTime.now(), widget.meeting, students)
             .then((value) {
           if (value.isNotEmpty && value.length > 0) {
             setState(() {
               absents = value;
-             
             });
           }
         });
@@ -113,7 +113,7 @@ class _StudentsListPageState extends State<StudentsListPage> {
                   }
                 }
 
-                FiretoreService()
+                FiretoreTeacherService()
                     .signaleAbsents(
                         absentStudents, widget.meeting, DateTime.now())
                     .then((value) {
@@ -126,7 +126,8 @@ class _StudentsListPageState extends State<StudentsListPage> {
                       textColor: Colors.white,
                       fontSize: 16.0);
                 });
-                Navigator.of(context).pop();
+
+                Navigator.of(context).pop(true);
               }
             },
           )
