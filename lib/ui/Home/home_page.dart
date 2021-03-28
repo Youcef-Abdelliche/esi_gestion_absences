@@ -28,12 +28,13 @@ class _HomePageState extends State<HomePage> {
       email = user.email;
     } else {}
 
-    FiretoreService().getTodayMeeting(email, DateTime(2021, 3, 28)).then((value) {
+    FiretoreService()
+        .getTodayMeeting(email, DateTime(2021, 3, 28))
+        .then((value) {
       setState(() {
         meetings = value;
       });
     });
-    
   }
 
   @override
@@ -75,12 +76,14 @@ class _HomePageState extends State<HomePage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => StudentsListPage(
-                                  meeting: meetings[index],
+                                      meeting: meetings[index],
                                       title: "2ST A G04",
                                       dateTime:
                                           "Jeudi, 25 février . 3:00 à 4:00pm",
                                     )),
-                          );
+                          ).whenComplete(() {
+                            meetings[index].absence = true;
+                          });
                         },
                         child: ItemMeeting(
                           title: meetings[index].module.toUpperCase(),

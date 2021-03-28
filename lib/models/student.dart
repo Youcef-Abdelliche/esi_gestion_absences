@@ -20,6 +20,7 @@ class Student {
       'nom': nom,
       'prenom': prenom,
       'email': email,
+      'promo': promo,
       'groupe': groupe,
     };
   }

@@ -22,7 +22,8 @@ class StudentsListPage extends StatefulWidget {
 
 class _StudentsListPageState extends State<StudentsListPage> {
   List<Student> students = [];
-  List<bool> Absents = [];
+  List<bool> absents = [];
+  List<Student> listStudentsAbsents = [];
   @override
   void initState() {
     // TODO: implement initState
@@ -35,9 +36,23 @@ class _StudentsListPageState extends State<StudentsListPage> {
       });
       students.forEach((element) {
         setState(() {
-          Absents.add(false);
+          absents.add(false);
         });
       });
+
+      if (widget.meeting.absence)
+        FiretoreService()
+            .getAbsentsStudents(DateTime.now(), widget.meeting, students)
+            .then((value) {
+          if (value.isNotEmpty && value.length > 0) {
+            setState(() {
+              absents = value;
+             
+            });
+          }
+        });
+
+      /**/
     });
   }
 
@@ -63,11 +78,11 @@ class _StudentsListPageState extends State<StudentsListPage> {
                   itemCount: students.length,
                   itemBuilder: (context, index) {
                     return StudentItem(
-                      isAbsent: Absents[index],
+                      isAbsent: absents[index],
                       name: students[index].nom + " " + students[index].prenom,
                       function: (value) {
                         setState(() {
-                          Absents[index] = value;
+                          absents[index] = value;
                         });
                       },
                     );
@@ -78,7 +93,8 @@ class _StudentsListPageState extends State<StudentsListPage> {
               margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10), color: Colors.red),
+                  borderRadius: BorderRadius.circular(10),
+                  color: (widget.meeting.absence) ? Colors.grey : Colors.red),
               child: Text(
                 "Signaler",
                 textAlign: TextAlign.center,
@@ -89,27 +105,29 @@ class _StudentsListPageState extends State<StudentsListPage> {
               ),
             ),
             onTap: () {
-              List<Student> absentStudents = [];
-              for (int i = 0; i < Absents.length; i++) {
-                if (Absents[i]) {
-                  absentStudents.add(students[i]);
+              if (!widget.meeting.absence) {
+                List<Student> absentStudents = [];
+                for (int i = 0; i < absents.length; i++) {
+                  if (absents[i]) {
+                    absentStudents.add(students[i]);
+                  }
                 }
-              }
 
-              FiretoreService()
-                  .signaleAbsents(
-                      absentStudents, widget.meeting, DateTime.now())
-                  .then((value) {
-                Fluttertoast.showToast(
-                    msg: value,
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.CENTER,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white,
-                    fontSize: 16.0);
-              });
-              Navigator.of(context).pop();
+                FiretoreService()
+                    .signaleAbsents(
+                        absentStudents, widget.meeting, DateTime.now())
+                    .then((value) {
+                  Fluttertoast.showToast(
+                      msg: "Liste envoyés avec succés",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.grey,
+                      textColor: Colors.white,
+                      fontSize: 16.0);
+                });
+                Navigator.of(context).pop();
+              }
             },
           )
         ],

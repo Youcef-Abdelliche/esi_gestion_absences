@@ -3,12 +3,11 @@ import 'package:esi_gabsence/models/meeting.dart';
 import 'package:esi_gabsence/models/student.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/cupertino.dart';
 
 class FiretoreService {
   final firestoreInstance = FirebaseFirestore.instance;
-  final _firebaseAuth = FirebaseAuth.instanceFor(app: Firebase.app());
+  //final _firebaseAuth = FirebaseAuth.instanceFor(app: Firebase.app());
 
   Future<List<Meeting>> getTodayMeeting(String email, DateTime dateTime) async {
     String todayDate = dateTime.year.toString() +
@@ -37,13 +36,13 @@ class FiretoreService {
   Future<List<Student>> getStudentsByPromoGroupe(
       String promo, String groupe) async {
     CollectionReference etudiants =
-        FirebaseFirestore.instance.collection('etudiants' + promo);
+        FirebaseFirestore.instance.collection('etudiants');
 
     List<Student> students = [];
     await etudiants.get().then((querySnapshot) {
       querySnapshot.docs.forEach((element) {
         Student student = Student.fromMap(element.data());
-        if (student.groupe == groupe) {
+        if (student.groupe == groupe && student.promo == promo) {
           students.add(student);
         }
       });
@@ -68,6 +67,7 @@ class FiretoreService {
         await absences.add({
           "date": todayDate,
           "time": meeting.time,
+          "module": meeting.module,
           "etudiant": {
             "nom": element.nom,
             'prenom': element.prenom,
@@ -82,4 +82,43 @@ class FiretoreService {
       return "Il n'y a pas des absences";
     }
   }
+
+  Future<List<bool>> getAbsentsStudents(
+      DateTime dateTime, Meeting meeting, List<Student> students) async {
+    CollectionReference absences =
+        FirebaseFirestore.instance.collection('absences');
+    String todayDate = dateTime.year.toString() +
+        "-" +
+        dateTime.month.toString() +
+        "-" +
+        dateTime.day.toString();
+    List<Student> absentsStudents = [];
+    List<bool> absentsss = [];
+    if (meeting.absence) {
+      await absences.get().then((querySnapshot) {
+        querySnapshot.docs.forEach((element) {
+          if (todayDate == element.data()['date']) {
+            Student student = Student.fromMap(element.data()['etudiant']);
+            if (meeting.groupe == student.groupe &&
+                meeting.promo == student.promo) absentsStudents.add(student);
+          }
+        });
+      });
+      students.forEach((element) {
+        absentsss.add(contains(element, absentsStudents));
+      });
+    }
+    return absentsss;
+  }
+}
+
+bool contains(Student element, List<Student> students) {
+  for (int index = 0; index < students.length; index++) {
+    if (students[index].email == element.email) {
+      return true;
+    }
+    break;
+  }
+
+  return false;
 }
