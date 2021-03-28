@@ -1,19 +1,23 @@
 import 'dart:convert';
 
 class Meeting {
+  String meetingId;
   String ensid;
   String groupe;
   String promo;
   String module;
   String time;
   bool absence;
+  String date;
   Meeting({
+    this.meetingId,
     this.ensid,
     this.groupe,
     this.promo,
     this.module,
     this.time,
     this.absence,
+    this.date,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,7 +27,8 @@ class Meeting {
       'promo': promo,
       'module': module,
       'time': time,
-      'absences': absence,
+      'absence': absence,
+      'date': date,
     };
   }
 
@@ -34,7 +39,8 @@ class Meeting {
       promo: map['promo'],
       module: map['module'],
       time: map['time'],
-      absence: map['absences'],
+      absence: map['absence'],
+      date: map['date'],
     );
   }
 

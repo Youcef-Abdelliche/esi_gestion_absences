@@ -3,7 +3,6 @@ import 'package:esi_gabsence/models/meeting.dart';
 import 'package:esi_gabsence/models/student.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 
 class FiretoreService {
   final firestoreInstance = FirebaseFirestore.instance;
@@ -21,15 +20,17 @@ class FiretoreService {
 
     CollectionReference seances =
         FirebaseFirestore.instance.collection('seances2021');
-    DocumentSnapshot documentSnapshot = await seances.doc(todayDate).get();
-    List<dynamic> list = documentSnapshot.data()["seances"];
     List<Meeting> meetings = [];
-    list.forEach((element) {
-      Meeting meeting = Meeting.fromMap(element);
-      if (user.uid == meeting.ensid) {
-        meetings.add(meeting);
-      }
+    await seances.get().then((querySnapshot) {
+      querySnapshot.docs.forEach((element) {
+        Meeting meeting = Meeting.fromMap(element.data());
+        meeting.meetingId = element.id;
+        if (user.uid == meeting.ensid && meeting.date == todayDate) {
+          meetings.add(meeting);
+        }
+      });
     });
+
     return meetings;
   }
 
@@ -77,6 +78,9 @@ class FiretoreService {
           },
         });
       });
+      CollectionReference seances =
+          FirebaseFirestore.instance.collection('seances2021');
+      await seances.doc(meeting.meetingId).update({'absence': true});
       return "${students.length} etudiants sont absents";
     } else {
       return "Il n'y a pas des absences";
@@ -108,7 +112,23 @@ class FiretoreService {
         absentsss.add(contains(element, absentsStudents));
       });
     }
+
     return absentsss;
+  }
+
+  Future<void> changeAbsenceStatut(Meeting meeting, DateTime dateTime) async {
+    String todayDate = dateTime.year.toString() +
+        "-" +
+        dateTime.month.toString() +
+        "-" +
+        dateTime.day.toString();
+
+    var user = FirebaseAuth.instanceFor(app: Firebase.app()).currentUser;
+    assert(user != null);
+
+    //await seances.doc(todayDate).set();
+
+    return null;
   }
 }
 
