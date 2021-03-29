@@ -1,6 +1,5 @@
 import 'package:esi_gabsence/models/meeting.dart';
 import 'package:esi_gabsence/models/student.dart';
-import 'package:esi_gabsence/services/firebase_auth_service_.dart';
 import 'package:esi_gabsence/services/firestore_teatcher_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';

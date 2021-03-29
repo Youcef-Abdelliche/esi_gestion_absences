@@ -12,7 +12,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool isStudent = false;
   bool isTeacher = false;
-  String role;
+  String role = "empty";
 
   Future<void> _signInWithGoogle() async {
     try {

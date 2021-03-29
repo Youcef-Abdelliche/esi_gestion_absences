@@ -1,6 +1,3 @@
-import 'dart:collection';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:esi_gabsence/models/meeting.dart';
 import 'package:esi_gabsence/services/firebase_auth_service_.dart';
 import 'package:esi_gabsence/services/firestore_teatcher_service.dart';
@@ -28,11 +25,11 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     var user = FirebaseAuth.instanceFor(app: Firebase.app()).currentUser;
     if (user != null) {
-      email = user.email;
+      email = user.displayName;
     } else {}
 
     FiretoreTeacherService()
-        .getTodayMeeting(email, DateTime(2021, 3, 28))
+        .getTodayMeeting(email, DateTime.now())
         .then((value) {
       setState(() {
         meetings = value;
@@ -80,7 +77,9 @@ class _HomePageState extends State<HomePage> {
                             MaterialPageRoute(
                                 builder: (context) => StudentsListPage(
                                       meeting: meetings[index],
-                                      title: "2ST A G04",
+                                      title: meetings[index].promo +
+                                          " " +
+                                          meetings[index].groupe,
                                       dateTime:
                                           "Jeudi, 25 février . 3:00 à 4:00pm",
                                     )),
@@ -88,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                             if (value != null) {
                               setState(() {
                                 signal = value;
-                                 meetings[index].absence = signal;
+                                meetings[index].absence = signal;
                               });
                             } else {
                               meetings[index].absence = signal;
@@ -105,8 +104,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-
 
 Map<String, String> days = {
   'Monday': "Lundi",

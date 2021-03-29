@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:esi_gabsence/services/shared_preference_service.dart';
 import 'package:esi_gabsence/ui/Auth/login_page.dart';
 import 'package:esi_gabsence/ui/Home/home_page.dart';
@@ -13,6 +14,9 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  var role;
+  final firestoreInstance = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,13 +25,39 @@ class _LandingPageState extends State<LandingPage> {
             FirebaseAuth.instanceFor(app: Firebase.app()).authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
-            /*var role;
-            SharedPreferenceService().getUserRole('role').then((value) {
-              role = value;
-            });*/
             User user = snapshot.data;
             if (user != null) {
-              return StudentHomePage();
+              /*return FutureBuilder(
+                  future: getUserRole(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.active) {
+                      if (snapshot.hasData && snapshot.data != null) {
+                        return (snapshot.data == "enseignant")
+                            ? HomePage()
+                            : StudentHomePage();
+                      }
+                    }
+
+                    return Center(child: CircularProgressIndicator());
+                  });*/
+
+              return StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("roles")
+                      .doc(snapshot.data.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.active) {
+                      final userDoc = snapshot.data.data();
+                      if (userDoc['role'] == 'etudiant') {
+                        return StudentHomePage();
+                      } else {
+                        return HomePage();
+                      }
+                    }
+                    return Center(child: CircularProgressIndicator());
+                  });
+              //return StudentHomePage();
             } else {
               return LoginPage();
             }
@@ -51,5 +81,31 @@ class _LandingPageState extends State<LandingPage> {
     );
   }
 }
+
+/*Future<String> getUserRole() async {
+  final firestoreInstance = FirebaseFirestore.instance;
+  CollectionReference role =
+      FirebaseFirestore.instance.collection('etudiants');
+  CollectionReference enseignants =
+      FirebaseFirestore.instance.collection('enseignants');
+  var user = FirebaseAuth.instanceFor(app: Firebase.app()).currentUser;
+  assert(user != null);
+
+  bool isTeacher = (await enseignants.doc(user.uid).get()).exists;
+
+  if (isTeacher) {
+    print("enseignant");
+    return "enseignant";
+  } else {
+    isTeacher = (await students.doc(user.uid).get()).exists;
+    if (isTeacher) {
+      print("etudiant");
+      return "etudiant";
+    } else {
+      print("nothing");
+      return "nothing";
+    }
+  }
+}*/
 
 /** */
