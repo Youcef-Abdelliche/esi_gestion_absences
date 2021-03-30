@@ -18,6 +18,11 @@ class _HomePageState extends State<HomePage> {
   var email;
   var date = "Monday";
   bool signal = false;
+  String todayDate = days[DateFormat('EEEE').format(DateTime.now())] +
+      ", " +
+      DateTime.now().day.toString() +
+      " " +
+      months[DateTime.now().month];
   List<Meeting> meetings = [];
 
   @override
@@ -57,11 +62,7 @@ class _HomePageState extends State<HomePage> {
           Container(
             margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             child: Text(
-              days[DateFormat('EEEE').format(DateTime.now())] +
-                  ", " +
-                  DateTime.now().day.toString() +
-                  " " +
-                  months[DateTime.now().month],
+              todayDate,
               style: TextStyle(fontSize: 20, color: Colors.black),
             ),
           ),
@@ -78,10 +79,10 @@ class _HomePageState extends State<HomePage> {
                                 builder: (context) => StudentsListPage(
                                       meeting: meetings[index],
                                       title: meetings[index].promo +
-                                          " " +
+                                          " G0" +
                                           meetings[index].groupe,
                                       dateTime:
-                                          "Jeudi, 25 février . 3:00 à 4:00pm",
+                                          "$todayDate . ${meetings[index].time}",
                                     )),
                           ).then((value) {
                             if (value != null) {
