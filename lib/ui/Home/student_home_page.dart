@@ -1,4 +1,5 @@
 import 'package:esi_gabsence/models/absence_model.dart';
+import 'package:esi_gabsence/services/firebase_auth_service_.dart';
 import 'package:esi_gabsence/services/firebase_student_service.dart';
 import 'package:esi_gabsence/ui/Home/components/item_meeting.dart';
 import 'package:esi_gabsence/ui/Home/components/module_item.dart';
@@ -44,6 +45,18 @@ class _StudentHomePageState extends State<StudentHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(name ?? "Error"),
+        backgroundColor: Color(0xFF023e8a),
+        actions: [
+          TextButton(
+            child: Text(
+              "Logout",
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: () {
+              FirebaseService().signOut();
+            },
+          )
+        ],
       ),
       body: (absences.length != 0)
           ? Column(
@@ -65,7 +78,9 @@ class _StudentHomePageState extends State<StudentHomePage> {
                         itemCount: absentsByModule.length,
                         itemBuilder: (context, index) {
                           return ModuleItem(
-                              title: absentsByModule[index]["module"],
+                              title: absentsByModule[index]["module"]
+                                  .toString()
+                                  .toUpperCase(),
                               NbrAbsences: absentsByModule[index]["nbr"]);
                         })),
                 Expanded(
@@ -75,7 +90,8 @@ class _StudentHomePageState extends State<StudentHomePage> {
                       itemBuilder: (context, index) {
                         return GestureDetector(
                           child: ItemMeeting(
-                            title: absences[index].module,
+                            title:
+                                absences[index].module.toString().toUpperCase(),
                             dateTime: absences[index].date +
                                 " . " +
                                 absences[index].time,

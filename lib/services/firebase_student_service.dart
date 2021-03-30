@@ -52,9 +52,12 @@ class FirebaseStudentService {
 }
 
 bool contains(List<dynamic> list, Absence absence) {
+  bool exists = false;
   for (int index = 0; index < list.length; index++) {
-    if (list[index]["module"] == absence.module) return true;
-    break;
+    if (list[index]["module"] == absence.module) {
+      exists = true;
+      break;
+    }
   }
-  return false;
+  return exists;
 }

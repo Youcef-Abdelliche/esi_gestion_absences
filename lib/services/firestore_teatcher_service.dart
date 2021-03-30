@@ -48,6 +48,7 @@ class FiretoreTeacherService {
         }
       });
     });
+    students.sort((student1, student2) => student1.nom.compareTo(student2.nom));
     return students;
   }
 
@@ -112,18 +113,23 @@ class FiretoreTeacherService {
         absentsss.add(contains(element, absentsStudents));
       });
     }
-
+    print(absentsss.length);
+    absentsss.forEach((element) {
+      print(element);
+     });
     return absentsss;
   }
 }
 
 bool contains(Student element, List<Student> students) {
+  bool exists = false;
   for (int index = 0; index < students.length; index++) {
     if (students[index].email == element.email) {
-      return true;
+     exists = true;
+     break;
     }
-    break;
+  
   }
 
-  return false;
+  return exists;
 }

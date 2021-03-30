@@ -59,7 +59,7 @@ class _StudentsListPageState extends State<StudentsListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title.toUpperCase()),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -47,9 +47,13 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(email ?? "Error"),
+        backgroundColor: Color(0xFF023e8a),
         actions: [
           TextButton(
-            child: Text("Logout"),
+            child: Text(
+              "Logout",
+              style: TextStyle(color: Colors.white),
+            ),
             onPressed: () {
               FirebaseService().signOut();
             },
